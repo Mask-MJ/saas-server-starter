@@ -3,6 +3,7 @@ import {
   IsBoolean,
   IsInt,
   IsIP,
+  IsOptional,
   IsString,
   Max,
   Min,
@@ -23,6 +24,13 @@ class EnvironmentVariables {
 
   @IsBoolean()
   LOG_ON: boolean;
+
+  @IsBoolean()
+  CORS: boolean;
+
+  @IsString()
+  @IsOptional()
+  VERSION?: string;
 
   @IsString()
   DATABASE_HOST: string;

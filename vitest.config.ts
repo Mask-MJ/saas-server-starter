@@ -5,15 +5,15 @@ export default defineConfig({
   test: {
     globals: true,
     alias: {
-      '@src': './src',
-      '@test': './test',
+      '@/*': './src',
+      '@/src': './src',
     },
     root: './',
   },
   resolve: {
     alias: {
-      '@src': './src',
-      '@test': './test',
+      '@/*': './src',
+      '@/src': './src',
     },
   },
   plugins: [swc.vite()],
