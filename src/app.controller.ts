@@ -6,7 +6,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(): string {
+  getHello(): Promise<string> {
     return this.appService.getHello();
   }
 
@@ -14,5 +14,10 @@ export class AppController {
   @Version('2')
   getHello2(): string {
     return this.appService.getHello2();
+  }
+
+  @Get('mail')
+  getMail() {
+    return this.appService.getMail();
   }
 }
