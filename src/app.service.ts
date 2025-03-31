@@ -4,12 +4,14 @@ import { Inject, Injectable } from '@nestjs/common';
 // import Redis from 'ioredis';
 // import { InjectRedis } from '@nestjs-modules/ioredis';
 import { Cache } from 'cache-manager';
+import { PrismaService } from './common/datebase/prisma.extension';
 
 @Injectable()
 export class AppService {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly mailerService: MailerService,
+    @Inject('PrismaService') private readonly prismaService: PrismaService,
   ) {}
 
   async getHello(): Promise<string> {
@@ -21,6 +23,21 @@ export class AppService {
     console.log('redisData', redisData);
     const redisData2 = await this.cacheManager.mget(['key1', 'key2']);
     console.log('redisData2', redisData2);
+    const user = await this.prismaService.client.user.create({
+      data: { name: 'mask2', email: 'xxx@qq.com' },
+    });
+
+    console.log('user', user);
+    // await this.prismaService.client.user.findMany({});
+    const [users, meta] = await this.prismaService.client.user
+      .paginate()
+      .withPages({
+        limit: 10,
+        page: 1,
+        includePageCount: true,
+      });
+    console.log('users', users);
+    console.log('meta', meta);
     return 'Hello World!';
   }
 

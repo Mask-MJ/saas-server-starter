@@ -9,23 +9,33 @@ import {
 import { HttpAdapterHost } from '@nestjs/core';
 import * as requestIp from 'request-ip';
 import { Response, Request } from 'express';
+import { Prisma } from '@prisma/client';
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger();
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
-  catch(exception: HttpException, host: ArgumentsHost) {
+  catch(
+    exception: HttpException | Prisma.PrismaClientKnownRequestError,
+    host: ArgumentsHost,
+  ) {
     const { httpAdapter } = this.httpAdapterHost;
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const { headers, query, params } = ctx.getRequest<Request>();
-
+    let message: unknown = exception['response'] || 'Internal Server Error';
+    if (exception.name === 'PrismaClientKnownRequestError') {
+      const shortMessage = exception.message.substring(
+        exception.message.indexOf('→'),
+      );
+      message =
+        `[${(exception as Prisma.PrismaClientKnownRequestError).code}]: ` +
+        shortMessage.substring(shortMessage.indexOf('\n')).trim();
+    }
     const httpStatus =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-
-    const message: unknown = exception['response'] || 'Internal Server Error';
 
     const responseBody = {
       headers,

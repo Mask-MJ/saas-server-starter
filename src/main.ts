@@ -39,10 +39,7 @@ async function bootstrap() {
   }
   // 版本
   if (VERSION) {
-    app.enableVersioning({
-      type: VersioningType.URI,
-      defaultVersion,
-    });
+    app.enableVersioning({ type: VersioningType.URI, defaultVersion });
   }
   await app.listen(PORT);
   console.log(
