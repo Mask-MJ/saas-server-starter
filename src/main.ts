@@ -3,15 +3,24 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AllExceptionFilter } from 'src/common/filters/all-exception.filter';
-import { VERSION_NEUTRAL, VersioningType } from '@nestjs/common';
+import {
+  ValidationPipe,
+  VERSION_NEUTRAL,
+  VersioningType,
+} from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { mw } from 'request-ip';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import metadata from './metadata';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   const configService = app.get(ConfigService);
   // 获取配置
+  const NAME = configService.get<string>('APP_NAME');
   const PORT = configService.get<number>('PORT', 3000);
   const PREFIX = configService.get<string>('PREFIX', 'api');
   const CORS = configService.get<boolean>('CORS', false);
@@ -29,8 +38,10 @@ async function bootstrap() {
     type: VersioningType.URI,
     defaultVersion,
   });
-  // 设置 api 访问前缀
+  // 访问前缀
   app.setGlobalPrefix(PREFIX);
+  // 全局拦截器
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   // 全局异常过滤器
   app.useGlobalFilters(new AllExceptionFilter(app.get(HttpAdapterHost)));
   // 跨域
@@ -41,6 +52,30 @@ async function bootstrap() {
   if (VERSION) {
     app.enableVersioning({ type: VersioningType.URI, defaultVersion });
   }
+  const swaggerOptions = new DocumentBuilder()
+    .setTitle(`${NAME} 接口文档`)
+    .setDescription(`The ${NAME} API escription`)
+    .setVersion('1.0')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      name: 'bearer',
+      description: '基于 JWT token',
+    })
+    .build();
+  await SwaggerModule.loadPluginMetadata(metadata);
+  const document = SwaggerModule.createDocument(app, swaggerOptions);
+  // 项目依赖当前文档功能，最好不要改变当前地址
+  // 生产环境使用 nginx 可以将当前文档地址 屏蔽外部访问
+  SwaggerModule.setup(`doc`, app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+    customSiteTitle: `${NAME} API Docs`,
+  });
+  // 获取真实 ip
+  app.use(mw({ attributeName: 'ip' }));
   await app.listen(PORT);
   console.log(
     `服务启动成功 `,

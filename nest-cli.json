@@ -3,12 +3,22 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "deleteOutDir": true,
     "builder": "swc",
+    "typeCheck": true,
+    "deleteOutDir": true,
     "watchAssets": true,
     "assets": [
       "common/mail/templates/**/*.hbs",
       "assets/**/*"
+    ],
+    "plugins": [
+      {
+        "name": "@nestjs/swagger",
+        "options": {
+          "introspectComments": true,
+          "classValidatorShim": true
+        }
+      }
     ]
   }
 }

@@ -14,31 +14,17 @@ export class AppService {
     @Inject('PrismaService') private readonly prismaService: PrismaService,
   ) {}
 
-  async getHello(): Promise<string> {
-    const redisData = await this.cacheManager.get('key');
-    await this.cacheManager.mset([
-      { key: 'key1', value: 'value1' },
-      { key: 'key2', value: 'value2' },
-    ]);
-    console.log('redisData', redisData);
-    const redisData2 = await this.cacheManager.mget(['key1', 'key2']);
-    console.log('redisData2', redisData2);
-    const user = await this.prismaService.client.user.create({
-      data: { name: 'mask2', email: 'xxx@qq.com' },
-    });
+  async getHello() {
+    // const user = await this.prismaService.client.user.create({
+    //   data: { name: 'mask2', email: 'xxx@qq.com' },
+    // });
 
-    console.log('user', user);
+    // console.log('user', user);
     // await this.prismaService.client.user.findMany({});
-    const [users, meta] = await this.prismaService.client.user
+    const [rows, meta] = await this.prismaService.client.user
       .paginate()
-      .withPages({
-        limit: 10,
-        page: 1,
-        includePageCount: true,
-      });
-    console.log('users', users);
-    console.log('meta', meta);
-    return 'Hello World!';
+      .withPages({ page: 1 });
+    return { rows, ...meta };
   }
 
   getHello2(): string {

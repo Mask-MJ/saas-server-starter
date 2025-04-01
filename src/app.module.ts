@@ -9,6 +9,7 @@ import { createKeyv } from '@keyv/redis';
 import { MailModule } from 'src/common/mail/mail.module';
 import { CustomPrismaModule } from 'nestjs-prisma';
 import { extendedPrismaClient } from '@/common/datebase/prisma.extension';
+import { UserModule } from './modules/system/user/user.module';
 @Module({
   imports: [
     ConfigModule,
@@ -45,6 +46,7 @@ import { extendedPrismaClient } from '@/common/datebase/prisma.extension';
       },
     }),
     MailModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -31,7 +31,7 @@ export const extendedPrismaClient = (options?: Prisma.PrismaClientOptions) =>
         },
       },
     })
-    .$extends(pagination());
+    .$extends(pagination({ pages: { limit: 10, includePageCount: true } }));
 
 export type ExtendedPrismaClient = ReturnType<typeof extendedPrismaClient>;
 
