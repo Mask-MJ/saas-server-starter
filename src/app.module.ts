@@ -10,6 +10,7 @@ import { MailModule } from 'src/common/mail/mail.module';
 import { CustomPrismaModule } from 'nestjs-prisma';
 import { extendedPrismaClient } from '@/common/datebase/prisma.extension';
 import { UserModule } from './modules/system/user/user.module';
+import { AuthenticationModule } from './modules/auth/authentication/authentication.module';
 @Module({
   imports: [
     ConfigModule,
@@ -47,6 +48,7 @@ import { UserModule } from './modules/system/user/user.module';
     }),
     MailModule,
     UserModule,
+    AuthenticationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

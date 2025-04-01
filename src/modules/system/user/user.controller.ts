@@ -9,7 +9,9 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { UserEntity } from './user.entity';
+import { ApiPaginatedResponse } from 'src/common/response/paginated.response';
 
 @ApiTags('用户管理')
 @Controller('user')
@@ -20,6 +22,7 @@ export class UserController {
    * 创建用户
    */
   @Post()
+  @ApiCreatedResponse({ type: UserEntity })
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
@@ -28,30 +31,32 @@ export class UserController {
    * 获取用户列表
    */
   @Get()
+  @ApiPaginatedResponse(UserEntity)
   findAll() {
     return this.userService.findAll();
   }
 
+  /**
+   * 获取单个用户信息
+   */
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
 
   /**
-   *
-   * @remarks This operation allows you to create a new cat.
-   *
-   * @throws {400} Bad Request.
-   *
-   * Create a new cat
+   * 更新用户信息
    */
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(id, updateUserDto);
   }
 
+  /**
+   * 删除用户
+   */
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.userService.remove(id);
   }
 }
