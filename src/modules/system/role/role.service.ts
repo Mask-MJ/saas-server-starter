@@ -10,17 +10,12 @@ export class RoleService {
     private readonly prisma: PrismaService,
   ) {}
   create(user: ActiveUserData, createRoleDto: CreateRoleDto) {
-    const {
-      menuIds,
-      // factoryIds,
-      ...rest
-    } = createRoleDto;
+    const { menuIds, ...rest } = createRoleDto;
     return this.prisma.client.role.create({
       data: {
         ...rest,
         createBy: user.username,
         menu: { connect: menuIds.map((id) => ({ id })) },
-        // factory: { connect: factoryIds.map((id) => ({ id })) },
       },
     });
   }
@@ -39,27 +34,25 @@ export class RoleService {
   async findOne(id: number) {
     const role = await this.prisma.client.role.findUnique({
       where: { id },
-      include: { menu: true, factory: true },
+      include: { menu: true },
     });
 
-    const { menu, factory, ...rest } = role;
+    const { menu, ...rest } = role;
 
     return {
       ...rest,
       menuIds: menu.map((menu) => menu.id),
-      factoryIds: factory.map((factory) => factory.id),
     };
   }
 
   update(id: number, user: ActiveUserData, updateRoleDto: UpdateRoleDto) {
-    const { menuIds, factoryIds, ...rest } = updateRoleDto;
+    const { menuIds, ...rest } = updateRoleDto;
     return this.prisma.client.role.update({
       where: { id },
       data: {
         ...rest,
         updateBy: user.username,
-        menu: { connect: menuIds.map((id) => ({ id })) },
-        factory: { connect: factoryIds.map((id) => ({ id })) },
+        menu: { connect: menuIds?.map((id) => ({ id })) },
       },
     });
   }
