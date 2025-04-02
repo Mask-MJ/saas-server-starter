@@ -8,8 +8,8 @@ import {
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import jwtConfig from 'src/modules/iam/config/jwt.config';
-import { REQUEST_USER_KEY } from 'src/modules/iam/iam.constants';
+import { REQUEST_USER_KEY } from '../../auth.constants';
+import jwtConfig from '../../config/jwt.config';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
@@ -36,7 +36,7 @@ export class AccessTokenGuard implements CanActivate {
       );
       request[REQUEST_USER_KEY] = payload;
     } catch (error) {
-      throw new UnauthorizedException('请先登录');
+      throw new UnauthorizedException('请先登录', error);
     }
     return true;
   }

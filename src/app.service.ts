@@ -11,17 +11,17 @@ export class AppService {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly mailerService: MailerService,
-    @Inject('PrismaService') private readonly prismaService: PrismaService,
+    @Inject('PrismaService') private readonly prisma: PrismaService,
   ) {}
 
   async getHello() {
-    // const user = await this.prismaService.client.user.create({
+    // const user = await this.prisma.client.user.create({
     //   data: { name: 'mask2', email: 'xxx@qq.com' },
     // });
 
     // console.log('user', user);
-    // await this.prismaService.client.user.findMany({});
-    const [rows, meta] = await this.prismaService.client.user
+    // await this.prisma.client.user.findMany({});
+    const [rows, meta] = await this.prisma.client.user
       .paginate()
       .withPages({ page: 1 });
     return { rows, ...meta };

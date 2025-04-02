@@ -11,7 +11,6 @@ import {
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const logOn = configService.get<boolean>('LOG_ON');
-        console.log('configService:', configService.get<boolean>('LOG_ON'));
         return {
           transports: [
             consoleTransport,

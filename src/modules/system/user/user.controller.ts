@@ -6,13 +6,29 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  Headers,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto, UpdateUserDto } from './user.dto';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ChangePasswordDto,
+  CreateUserDto,
+  QueryUserDto,
+  UpdateUserDto,
+} from './user.dto';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UserEntity } from './user.entity';
 import { ApiPaginatedResponse } from 'src/common/response/paginated.response';
+import { Permissions } from 'src/modules/auth/authorization/decorators/permissions.decorator';
+import { ActiveUser } from '@/modules/auth/decorators/active-user.decorator';
+import { ActiveUserData } from '@/modules/auth/interfaces/active-user-data.interface';
 
+@ApiBearerAuth('bearer')
 @ApiTags('用户管理')
 @Controller('user')
 export class UserController {
@@ -23,6 +39,7 @@ export class UserController {
    */
   @Post()
   @ApiCreatedResponse({ type: UserEntity })
+  @Permissions('system:user:create')
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
@@ -32,16 +49,39 @@ export class UserController {
    */
   @Get()
   @ApiPaginatedResponse(UserEntity)
-  findAll() {
-    return this.userService.findAll();
+  @Permissions('system:user:query')
+  findAll(@Query() queryUserDto: QueryUserDto) {
+    return this.userService.findAll(queryUserDto);
+  }
+
+  /**
+   * 获取用户信息
+   */
+  @Get('info')
+  @ApiOkResponse({ type: UserEntity })
+  async findSelf(@ActiveUser() user: ActiveUserData) {
+    return this.userService.findSelf(user.sub);
   }
 
   /**
    * 获取单个用户信息
    */
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  @ApiOkResponse({ type: UserEntity })
+  @Permissions('system:user:query')
+  findOne(@Param('id') id: number) {
+    return this.userService.findOne(id);
+  }
+
+  /**
+   * 修改密码
+   */
+  @Patch('changePassword')
+  @ApiOkResponse({ type: UserEntity })
+  async changePassword(
+    @Body() { id, oldPassword, password }: ChangePasswordDto,
+  ) {
+    return this.userService.changePassword(id, password, oldPassword);
   }
 
   /**
@@ -56,7 +96,12 @@ export class UserController {
    * 删除用户
    */
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.userService.remove(id);
+  @Permissions('system:user:delete')
+  remove(
+    @ActiveUser() user: ActiveUserData,
+    @Param('id') id: number,
+    @Headers('X-Real-IP') ip: string,
+  ) {
+    return this.userService.remove(user, id, ip);
   }
 }

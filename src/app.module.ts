@@ -9,14 +9,17 @@ import { createKeyv } from '@keyv/redis';
 import { MailModule } from 'src/common/mail/mail.module';
 import { CustomPrismaModule } from 'nestjs-prisma';
 import { extendedPrismaClient } from '@/common/datebase/prisma.extension';
-import { UserModule } from './modules/system/user/user.module';
-import { AuthenticationModule } from './modules/auth/authentication/authentication.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { RouterModule } from '@nestjs/core';
+import { SystemModule } from './modules/system/system.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 @Module({
   imports: [
     ConfigModule,
     LogsModule,
     CacheModule.registerAsync({
       inject: [ConfigService],
+      isGlobal: true,
       useFactory: (configService: ConfigService) => {
         const REDIS_HOST = configService.get<string>('REDIS_HOST');
         const REDIS_PORT = configService.get<number>('REDIS_PORT');
@@ -47,8 +50,13 @@ import { AuthenticationModule } from './modules/auth/authentication/authenticati
       },
     }),
     MailModule,
-    UserModule,
-    AuthenticationModule,
+    AuthModule,
+    EventEmitterModule.forRoot(),
+    RouterModule.register([
+      { path: 'system', module: SystemModule },
+      { path: 'auth', module: AuthModule },
+    ]),
+    SystemModule,
   ],
   controllers: [AppController],
   providers: [AppService],

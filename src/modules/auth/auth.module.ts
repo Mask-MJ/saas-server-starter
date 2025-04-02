@@ -10,32 +10,21 @@ import { AuthenticationController } from './authentication/authentication.contro
 import { AuthenticationService } from './authentication/authentication.service';
 import { AuthenticationGuard } from './authentication/guards/authentication.guard';
 import { AccessTokenGuard } from './authentication/guards/access-token.guard';
-import { RefreshTokenIdsStorage } from './authentication/refresh-token-ids.storage';
-// import { RolesGuard } from './authorization/guards/roles.guard';
-import { CustomPrismaModule, PrismaModule } from 'nestjs-prisma';
 import { PermissionsGuard } from './authorization/guards/permisssions.guard';
-import { extendedPrismaClient } from 'src/common/pagination/prisma.extension';
 
 @Module({
   imports: [
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
-    CustomPrismaModule.forRootAsync({
-      name: 'PrismaService',
-      useFactory: () => extendedPrismaClient,
-    }),
-    PrismaModule,
   ],
   providers: [
     { provide: HashingService, useClass: BcryptService },
     { provide: APP_GUARD, useClass: AuthenticationGuard },
-    // { provide: APP_GUARD, useClass: RolesGuard },
     { provide: APP_GUARD, useClass: PermissionsGuard },
     AccessTokenGuard,
-    RefreshTokenIdsStorage,
     AuthenticationService,
     Logger,
   ],
   controllers: [AuthenticationController],
 })
-export class IamModule {}
+export class AuthModule {}

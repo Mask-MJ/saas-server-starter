@@ -16,17 +16,18 @@ export class AuthenticationGuard implements CanActivate {
     private readonly reflector: Reflector,
     // 注入 access token
     private readonly accessTokenGuard: AccessTokenGuard,
-  ) {}
+  ) {
+    this.authTypeGuardMap = {
+      [AuthType.Bearer]: this.accessTokenGuard,
+      [AuthType.None]: { canActivate: () => true },
+    };
+  }
 
   private static readonly defaultAuthType = AuthType.Bearer;
-  // 通过 reflector 获取元数据
   private readonly authTypeGuardMap: Record<
     AuthType,
     CanActivate | CanActivate[]
-  > = {
-    [AuthType.Bearer]: this.accessTokenGuard,
-    [AuthType.None]: { canActivate: () => true },
-  };
+  >;
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // 获取元数据

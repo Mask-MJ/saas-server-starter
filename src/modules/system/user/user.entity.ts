@@ -8,7 +8,7 @@ export class UserEntity implements User {
   }
   id: number;
   isAdmin: boolean;
-  account: string;
+  username: string;
   @ApiHideProperty()
   @Exclude()
   password: string;

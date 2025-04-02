@@ -3,8 +3,6 @@ import { Module } from '@nestjs/common';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ConfigService } from '@nestjs/config';
 
-console.log('path', __dirname + '/templates');
-
 @Module({
   imports: [
     MailerModule.forRootAsync({
