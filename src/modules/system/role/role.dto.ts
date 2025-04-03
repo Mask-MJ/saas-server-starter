@@ -36,7 +36,7 @@ export class CreateRoleDto {
   @IsArray()
   @IsNumber({}, { each: true })
   @IsOptional()
-  menuIds: number[] = [];
+  menuIds: number[];
   /**
    * 工厂ID
    * @example [1, 2]
@@ -44,7 +44,7 @@ export class CreateRoleDto {
   @IsArray()
   @IsNumber({}, { each: true })
   @IsOptional()
-  factoryIds: number[] = [];
+  factoryIds: number[];
 }
 export class QueryRoleDto extends PartialType(
   IntersectionType(PickType(CreateRoleDto, ['name', 'value']), BaseDto),

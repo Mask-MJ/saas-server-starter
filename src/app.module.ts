@@ -13,6 +13,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { RouterModule } from '@nestjs/core';
 import { SystemModule } from './modules/system/system.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { MonitorModule } from './modules/monitor/monitor.module';
 @Module({
   imports: [
     ConfigModule,
@@ -54,9 +55,11 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     EventEmitterModule.forRoot(),
     RouterModule.register([
       { path: 'system', module: SystemModule },
+      { path: 'monitor', module: MonitorModule },
       { path: 'auth', module: AuthModule },
     ]),
     SystemModule,
+    MonitorModule,
   ],
   controllers: [AppController],
   providers: [AppService],

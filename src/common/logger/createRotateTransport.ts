@@ -7,7 +7,7 @@ export const consoleTransport = new winston.transports.Console({
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.ms(),
-    utilities.format.nestLike('Winston'),
+    utilities.format.nestLike(),
   ),
 });
 

@@ -1,15 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the `user` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropForeignKey
-ALTER TABLE "user" DROP CONSTRAINT "user_createBy_fkey";
-
--- DropTable
-DROP TABLE "user";
-
 -- CreateTable
 CREATE TABLE "Dept" (
     "id" SERIAL NOT NULL,
@@ -25,6 +13,65 @@ CREATE TABLE "Dept" (
     "parentId" INTEGER,
 
     CONSTRAINT "Dept_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "DictType" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "status" BOOLEAN NOT NULL DEFAULT true,
+    "createBy" TEXT NOT NULL,
+    "updateBy" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "remark" TEXT NOT NULL DEFAULT '',
+
+    CONSTRAINT "DictType_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "DictData" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "sort" INTEGER NOT NULL DEFAULT 1,
+    "status" BOOLEAN NOT NULL DEFAULT true,
+    "createBy" TEXT NOT NULL,
+    "updateBy" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "remark" TEXT NOT NULL DEFAULT '',
+    "dictTypeId" INTEGER NOT NULL,
+
+    CONSTRAINT "DictData_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Operation" (
+    "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "title" TEXT NOT NULL,
+    "businessType" INTEGER NOT NULL DEFAULT 1,
+    "module" TEXT NOT NULL,
+    "ip" TEXT NOT NULL,
+    "address" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+
+    CONSTRAINT "Operation_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Login" (
+    "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "sessionId" TEXT NOT NULL DEFAULT '',
+    "ip" TEXT NOT NULL,
+    "address" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "username" TEXT NOT NULL,
+
+    CONSTRAINT "Login_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -187,6 +234,9 @@ CREATE INDEX "_RoleToUser_B_index" ON "_RoleToUser"("B");
 
 -- AddForeignKey
 ALTER TABLE "Dept" ADD CONSTRAINT "Dept_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "Dept"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DictData" ADD CONSTRAINT "DictData_dictTypeId_fkey" FOREIGN KEY ("dictTypeId") REFERENCES "DictType"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Menu" ADD CONSTRAINT "Menu_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "Menu"("id") ON DELETE SET NULL ON UPDATE CASCADE;

@@ -68,6 +68,9 @@ importers:
       helmet:
         specifier: ^8.1.0
         version: 8.1.0
+      ip2region:
+        specifier: ^2.3.0
+        version: 2.3.0(@types/node@22.13.14)
       jwt:
         specifier: ^0.2.0
         version: 0.2.0
@@ -92,6 +95,9 @@ importers:
       rxjs:
         specifier: ^7.8.1
         version: 7.8.2
+      systeminformation:
+        specifier: ^5.25.11
+        version: 5.25.11
       unplugin-swc:
         specifier: ^1.5.1
         version: 1.5.1(@swc/core@1.11.13)(rollup@4.37.0)
@@ -3181,6 +3187,11 @@ packages:
   inspect-with-kind@1.0.5:
     resolution: {integrity: sha512-MAQUJuIo7Xqk8EVNP+6d3CKq9c80hi4tjIbIAT6lmGW9W6WzlHiu9PS8uSuUYU+Do+j1baiFp3H25XEVxDIG2g==}
 
+  ip2region@2.3.0:
+    resolution: {integrity: sha512-zV5Xsadzrx9Ej6heoyhbXMsfGWWQ3C6bAIYStrHhw9kzLpGpVNlnAyRBxxPgxA1GNqr1Ti7oUxcWsMWNN3jZBg==}
+    peerDependencies:
+      '@types/node': '*'
+
   ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
     engines: {node: '>= 0.10'}
@@ -4731,6 +4742,12 @@ packages:
   synckit@0.10.3:
     resolution: {integrity: sha512-R1urvuyiTaWfeCggqEvpDJwAlDVdsT9NM+IP//Tk2x7qHCkSvBk/fwFgw/TLAHzZlrAnnazMcRw0ZD8HlYFTEQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
+
+  systeminformation@5.25.11:
+    resolution: {integrity: sha512-jI01fn/t47rrLTQB0FTlMCC+5dYx8o0RRF+R4BPiUNsvg5OdY0s9DKMFmJGrx5SwMZQ4cag0Gl6v8oycso9b/g==}
+    engines: {node: '>=8.0.0'}
+    os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
+    hasBin: true
 
   tapable@2.2.1:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
@@ -8542,6 +8559,10 @@ snapshots:
     dependencies:
       kind-of: 6.0.3
 
+  ip2region@2.3.0(@types/node@22.13.14):
+    dependencies:
+      '@types/node': 22.13.14
+
   ipaddr.js@1.9.1: {}
 
   is-arrayish@0.2.1: {}
@@ -10578,6 +10599,8 @@ snapshots:
     dependencies:
       '@pkgr/core': 0.2.0
       tslib: 2.8.1
+
+  systeminformation@5.25.11: {}
 
   tapable@2.2.1: {}
 

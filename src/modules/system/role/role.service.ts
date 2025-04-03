@@ -32,11 +32,10 @@ export class RoleService {
   }
 
   async findOne(id: number) {
-    const role = await this.prisma.client.role.findUnique({
+    const role = await this.prisma.client.role.findUniqueOrThrow({
       where: { id },
       include: { menu: true },
     });
-
     const { menu, ...rest } = role;
 
     return {
@@ -46,13 +45,13 @@ export class RoleService {
   }
 
   update(id: number, user: ActiveUserData, updateRoleDto: UpdateRoleDto) {
-    const { menuIds, ...rest } = updateRoleDto;
+    const { menuIds = [], ...rest } = updateRoleDto;
     return this.prisma.client.role.update({
       where: { id },
       data: {
         ...rest,
         updateBy: user.username,
-        menu: { connect: menuIds?.map((id) => ({ id })) },
+        menu: { connect: menuIds.map((id) => ({ id })) },
       },
     });
   }
