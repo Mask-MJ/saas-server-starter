@@ -9,9 +9,9 @@ export class RoleService {
     @Inject('PrismaService')
     private readonly prisma: PrismaService,
   ) {}
-  create(user: ActiveUserData, createRoleDto: CreateRoleDto) {
+  async create(user: ActiveUserData, createRoleDto: CreateRoleDto) {
     const { menuIds, ...rest } = createRoleDto;
-    return this.prisma.client.role.create({
+    return await this.prisma.client.role.create({
       data: {
         ...rest,
         createBy: user.username,
@@ -44,9 +44,9 @@ export class RoleService {
     };
   }
 
-  update(id: number, user: ActiveUserData, updateRoleDto: UpdateRoleDto) {
+  async update(id: number, user: ActiveUserData, updateRoleDto: UpdateRoleDto) {
     const { menuIds = [], ...rest } = updateRoleDto;
-    return this.prisma.client.role.update({
+    return await this.prisma.client.role.update({
       where: { id },
       data: {
         ...rest,

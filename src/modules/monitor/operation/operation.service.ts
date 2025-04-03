@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '@/common/datebase/prisma.extension';
 import { CreateOperationDto, QueryOperationDto } from './operation.dto';
 import IP2Region from 'ip2region';
+import { OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class OperationService {
@@ -37,6 +38,18 @@ export class OperationService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} operation`;
+    return this.prisma.client.operation.findUniqueOrThrow({
+      where: { id },
+    });
+  }
+
+  @OnEvent('create')
+  async handleOperationCreateEvent(payload: CreateOperationDto) {
+    await this.create(payload);
+  }
+
+  @OnEvent('delete')
+  async handleOperationDeleteEvent(payload: CreateOperationDto) {
+    await this.create(payload);
   }
 }

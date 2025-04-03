@@ -43,8 +43,8 @@ export class UserService {
     });
   }
 
-  findSelf(id: number) {
-    return this.prisma.client.user.findUniqueOrThrow({
+  async findSelf(id: number) {
+    return await this.prisma.client.user.findUniqueOrThrow({
       where: { id },
       include: {
         role: { include: { menu: { include: { permission: true } } } },
@@ -120,9 +120,9 @@ export class UserService {
     });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
     const { roleIds, ...rest } = updateUserDto;
-    return this.prisma.client.user.update({
+    return await this.prisma.client.user.update({
       where: { id },
       data: {
         ...rest,

@@ -55,22 +55,13 @@ export class UserController {
   }
 
   /**
-   * 获取用户信息
+   * 获取当前登录用户信息
    */
   @Get('info')
   @ApiOkResponse({ type: UserEntity })
-  async findSelf(@ActiveUser() user: ActiveUserData) {
-    return this.userService.findSelf(user.sub);
-  }
-
-  /**
-   * 获取单个用户信息
-   */
-  @Get(':id')
-  @ApiOkResponse({ type: UserEntity })
   @Permissions('system:user:query')
-  findOne(@Param('id') id: number) {
-    return this.userService.findOne(id);
+  findSelf(@ActiveUser() user: ActiveUserData) {
+    return this.userService.findSelf(user.sub);
   }
 
   /**
@@ -85,9 +76,20 @@ export class UserController {
   }
 
   /**
-   * 更新用户信息
+   * 获取单个用户信息
+   */
+  @Get(':id')
+  @ApiOkResponse({ type: UserEntity })
+  @Permissions('system:user:query')
+  findOne(@Param('id') id: number) {
+    return this.userService.findOne(id);
+  }
+
+  /**
+   * 更新用户
    */
   @Patch(':id')
+  @ApiOkResponse({ type: UserEntity })
   update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }

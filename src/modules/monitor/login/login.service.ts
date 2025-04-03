@@ -1,26 +1,42 @@
-import { Injectable } from '@nestjs/common';
-import { CreateLoginDto } from './dto/create-login.dto';
-import { UpdateLoginDto } from './dto/update-login.dto';
+import { Inject, Injectable } from '@nestjs/common';
+import { CreateLoginDto, QueryLoginDto } from './login.dto';
+import { PrismaService } from '@/common/datebase/prisma.extension';
+import IP2Region from 'ip2region';
+import { OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class LoginService {
+  constructor(
+    @Inject('PrismaService') private readonly prisma: PrismaService,
+  ) {}
+
   create(createLoginDto: CreateLoginDto) {
-    return 'This action adds a new login';
+    const query = new IP2Region();
+    const addressInfo = query.search(createLoginDto.ip);
+    const address = addressInfo ? addressInfo.province + addressInfo.city : '';
+    return this.prisma.client.login.create({
+      data: { ...createLoginDto, address },
+    });
   }
 
-  findAll() {
-    return `This action returns all login`;
+  async findAll(queryLoginDto: QueryLoginDto) {
+    const { pageSize, page, username } = queryLoginDto;
+    const [rows, meta] = await this.prisma.client.login
+      .paginate({
+        where: { username },
+        orderBy: { createdAt: 'desc' },
+      })
+      .withPages({ limit: pageSize, page, includePageCount: true });
+
+    return { rows, ...meta };
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} login`;
+    return this.prisma.client.login.findUnique({ where: { id } });
   }
 
-  update(id: number, updateLoginDto: UpdateLoginDto) {
-    return `This action updates a #${id} login`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} login`;
+  @OnEvent('login')
+  handleLoginEvent(payload: CreateLoginDto) {
+    this.create(payload);
   }
 }
