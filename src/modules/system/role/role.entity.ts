@@ -10,7 +10,4 @@ export class RoleEntity implements Role {
   updateBy: string;
   createdAt: Date;
   updatedAt: Date;
-  menu: number[];
-  user: number[];
-  factory: number[];
 }

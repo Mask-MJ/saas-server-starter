@@ -1,6 +1,7 @@
 import { ApiHideProperty } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { Exclude } from 'class-transformer';
+import { RoleEntity } from '../role/role.entity';
 
 export class UserEntity implements User {
   id: number;
@@ -19,4 +20,5 @@ export class UserEntity implements User {
   createdAt: Date;
   updatedAt: Date;
   remark: string;
+  role: RoleEntity[];
 }

@@ -89,10 +89,7 @@ export class UserService {
       include: { role: true },
     });
     const userWithoutPassword = this.exclude(user, ['password']);
-    return {
-      ...userWithoutPassword,
-      roleIds: user.role.map((role) => role.id),
-    };
+    return userWithoutPassword;
   }
 
   async changePassword(id: number, password: string, oldPassword: string) {
