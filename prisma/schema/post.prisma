@@ -17,6 +17,6 @@ model Post {
   /// 更新时间
   updatedAt DateTime @updatedAt
   /// 备注
-  remark    String   @default("")
+  remark    String?
   user      User[]   @relation("PostToUser")
 }

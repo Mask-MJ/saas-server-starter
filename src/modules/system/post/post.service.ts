@@ -1,26 +1,46 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
+import { Inject, Injectable } from '@nestjs/common';
+import { PrismaService } from '@/common/datebase/prisma.extension';
+import { ActiveUserData } from '@/modules/auth/interfaces/active-user-data.interface';
+import { CreatePostDto, QueryPostDto, UpdatePostDto } from './post.dto';
 
 @Injectable()
 export class PostService {
-  create(createPostDto: CreatePostDto) {
-    return 'This action adds a new post';
+  constructor(
+    @Inject('PrismaService') private readonly prisma: PrismaService,
+  ) {}
+
+  async create(user: ActiveUserData, createPostDto: CreatePostDto) {
+    return this.prisma.client.post.create({
+      data: { ...createPostDto, createBy: user.username },
+    });
   }
 
-  findAll() {
-    return `This action returns all post`;
+  async findAll(queryPostDto: QueryPostDto) {
+    const { name, code, page, pageSize } = queryPostDto;
+    const [rows, meta] = await this.prisma.client.post
+      .paginate({
+        where: {
+          name: { contains: name, mode: 'insensitive' },
+          code: { contains: code, mode: 'insensitive' },
+        },
+        orderBy: { sort: 'asc' },
+      })
+      .withPages({ page, limit: pageSize, includePageCount: true });
+    return { rows, ...meta };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  async findOne(id: number) {
+    return this.prisma.client.post.findUnique({ where: { id } });
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async update(id: number, user: ActiveUserData, updatePostDto: UpdatePostDto) {
+    return this.prisma.client.post.update({
+      where: { id },
+      data: { ...updatePostDto, updateBy: user.username },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  async remove(id: number) {
+    return this.prisma.client.post.delete({ where: { id } });
   }
 }

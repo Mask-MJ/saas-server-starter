@@ -32,6 +32,9 @@ export class AllExceptionFilter implements ExceptionFilter {
         `[${(exception as Prisma.PrismaClientKnownRequestError).code}]: ` +
         shortMessage.substring(shortMessage.indexOf('\n')).trim();
     }
+    if (exception.name === 'PrismaClientValidationError') {
+      message = exception.message.split('\n\n')[2];
+    }
     const httpStatus =
       exception instanceof HttpException
         ? exception.getStatus()

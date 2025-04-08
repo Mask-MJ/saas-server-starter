@@ -10,7 +10,7 @@ export class OperationService {
     @Inject('PrismaService') private readonly prisma: PrismaService,
   ) {}
 
-  create(createOperationDto: CreateOperationDto) {
+  async create(createOperationDto: CreateOperationDto) {
     const query = new IP2Region();
     const addressInfo = query.search(createOperationDto.ip);
     const address = addressInfo ? addressInfo.province + addressInfo.city : '';
@@ -37,7 +37,7 @@ export class OperationService {
     return { rows, ...meta };
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return this.prisma.client.operation.findUniqueOrThrow({
       where: { id },
     });

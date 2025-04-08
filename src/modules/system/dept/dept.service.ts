@@ -1,26 +1,43 @@
-import { Injectable } from '@nestjs/common';
-import { CreateDeptDto } from './dto/create-dept.dto';
-import { UpdateDeptDto } from './dto/update-dept.dto';
-
+import { Inject, Injectable } from '@nestjs/common';
+import { CreateDeptDto, QueryDeptDto, UpdateDeptDto } from './dept.dto';
+import { PrismaService } from '@/common/datebase/prisma.extension';
+import { ActiveUserData } from '@/modules/auth/interfaces/active-user-data.interface';
+import { transformationTree } from '@/common/utils';
+import { DeptEntity } from './dept.entity';
 @Injectable()
 export class DeptService {
-  create(createDeptDto: CreateDeptDto) {
-    return 'This action adds a new dept';
+  constructor(
+    @Inject('PrismaService') private readonly prisma: PrismaService,
+  ) {}
+
+  async create(user: ActiveUserData, createDeptDto: CreateDeptDto) {
+    return this.prisma.client.dept.create({
+      data: { ...createDeptDto, createBy: user.username },
+    });
   }
 
-  findAll() {
-    return `This action returns all dept`;
+  async findAll(queryDeptDto: QueryDeptDto) {
+    // https://github.com/prisma/prisma/issues/3725
+    // https://github.com/prisma/prisma/issues/4562
+    const { name } = queryDeptDto;
+    const depts = await this.prisma.client.dept.findMany({
+      where: { name: { contains: name, mode: 'insensitive' } },
+    });
+    return transformationTree<DeptEntity>(depts, null);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} dept`;
+  async findOne(id: number) {
+    return this.prisma.client.dept.findUniqueOrThrow({ where: { id } });
   }
 
-  update(id: number, updateDeptDto: UpdateDeptDto) {
-    return `This action updates a #${id} dept`;
+  async update(id: number, user: ActiveUserData, updateDeptDto: UpdateDeptDto) {
+    return this.prisma.client.dept.update({
+      where: { id },
+      data: { ...updateDeptDto, updateBy: user.username },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} dept`;
+  async remove(id: number) {
+    return this.prisma.client.dept.delete({ where: { id } });
   }
 }

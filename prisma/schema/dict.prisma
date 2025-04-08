@@ -17,7 +17,7 @@ model DictType {
   /// 更新时间
   updatedAt DateTime   @updatedAt
   /// 备注
-  remark    String     @default("")
+  remark    String?
   dictData  DictData[]
 }
 
@@ -42,7 +42,7 @@ model DictData {
   /// 更新时间
   updatedAt  DateTime @updatedAt
   /// 备注
-  remark     String   @default("")
+  remark     String?
   /// 字典类型
   dictTypeId Int
   dictType   DictType @relation(fields: [dictTypeId], references: [id], onDelete: Cascade)

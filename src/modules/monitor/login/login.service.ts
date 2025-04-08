@@ -10,7 +10,7 @@ export class LoginService {
     @Inject('PrismaService') private readonly prisma: PrismaService,
   ) {}
 
-  create(createLoginDto: CreateLoginDto) {
+  async create(createLoginDto: CreateLoginDto) {
     const query = new IP2Region();
     const addressInfo = query.search(createLoginDto.ip);
     const address = addressInfo ? addressInfo.province + addressInfo.city : '';
@@ -31,12 +31,12 @@ export class LoginService {
     return { rows, ...meta };
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return this.prisma.client.login.findUnique({ where: { id } });
   }
 
   @OnEvent('login')
-  handleLoginEvent(payload: CreateLoginDto) {
-    this.create(payload);
+  async handleLoginEvent(payload: CreateLoginDto) {
+    await this.create(payload);
   }
 }

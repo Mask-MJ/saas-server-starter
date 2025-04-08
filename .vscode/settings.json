@@ -9,9 +9,9 @@
   // "editor.multiCursorModifier": "ctrlCmd",
   // "editor.renderWhitespace": "boundary",
   "editor.formatOnSave": true,
-  "[prisma]": {
-    "editor.defaultFormatter": "Prisma.prisma"
-  },
+  // "[prisma]": {
+  //   "editor.defaultFormatter": "Prisma.prisma"
+  // },
   "editor.suggestSelection": "first",
   "editor.tabSize": 2,
   "editor.unicodeHighlight.invisibleCharacters": false,

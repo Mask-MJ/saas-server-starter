@@ -23,7 +23,7 @@ model Menu {
   /// 更新时间
   updatedAt  DateTime     @updatedAt
   /// 备注
-  remark     String       @default("")
+  remark     String?
   /// 父级菜单ID
   parentId   Int?
   parent     Menu?        @relation("MenuToMenu", fields: [parentId], references: [id])
@@ -40,7 +40,7 @@ model Permission {
   name      String
   /// 权限值
   value     String
-  remark    String   @default("")
+  remark    String?
   /// 绑定菜单id
   menuId    Int?
   createdAt DateTime @default(now())

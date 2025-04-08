@@ -37,7 +37,7 @@ model User {
   /// 更新时间
   updatedAt   DateTime @updatedAt
   /// 备注
-  remark      String   @default("")
+  remark      String?
   creator     User?    @relation("editor", fields: [createBy], references: [username])
   updateBy    User?    @relation("editor")
   dept        Dept[]   @relation("DeptToUser")
@@ -65,7 +65,7 @@ model Role {
   /// 更新时间
   updatedAt DateTime @updatedAt
   /// 备注
-  remark    String   @default("")
+  remark    String?
   menu      Menu[]   @relation("MenuToRole")
   user      User[]   @relation("RoleToUser")
 }
