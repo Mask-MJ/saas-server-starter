@@ -708,10 +708,7 @@ export default async () => {
           import('./modules/project/valve/dto/update-valve.dto'),
           { UpdateValveDto: {} },
         ],
-        [
-          import('./modules/project/valve/entities/valve.entity'),
-          { Valve: {} },
-        ],
+        [import('./modules/project/valve/valve.entity'), { Valve: {} }],
         [
           import('./modules/project/factory/dto/create-factory.dto'),
           { CreateFactoryDto: {} },
@@ -720,10 +717,7 @@ export default async () => {
           import('./modules/project/factory/dto/update-factory.dto'),
           { UpdateFactoryDto: {} },
         ],
-        [
-          import('./modules/project/factory/entities/factory.entity'),
-          { Factory: {} },
-        ],
+        [import('./modules/project/factory/factory.entity'), { Factory: {} }],
         [
           import('./modules/project/device/dto/create-device.dto'),
           { CreateDeviceDto: {} },
@@ -732,10 +726,7 @@ export default async () => {
           import('./modules/project/device/dto/update-device.dto'),
           { UpdateDeviceDto: {} },
         ],
-        [
-          import('./modules/project/device/entities/device.entity'),
-          { Device: {} },
-        ],
+        [import('./modules/project/device/device.entity'), { Device: {} }],
         [
           import(
             './modules/project/analysis-task/dto/create-analysis-task.dto'
