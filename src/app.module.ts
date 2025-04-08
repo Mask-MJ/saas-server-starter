@@ -14,6 +14,10 @@ import { RouterModule } from '@nestjs/core';
 import { SystemModule } from './modules/system/system.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MonitorModule } from './modules/monitor/monitor.module';
+import { ValveModule } from './modules/project/valve/valve.module';
+import { FactoryModule } from './modules/project/factory/factory.module';
+import { DeviceModule } from './modules/project/device/device.module';
+import { AnalysisTaskModule } from './modules/project/analysis-task/analysis-task.module';
 @Module({
   imports: [
     ConfigModule,
@@ -60,6 +64,10 @@ import { MonitorModule } from './modules/monitor/monitor.module';
     ]),
     SystemModule,
     MonitorModule,
+    ValveModule,
+    FactoryModule,
+    DeviceModule,
+    AnalysisTaskModule,
   ],
   controllers: [AppController],
   providers: [AppService],
