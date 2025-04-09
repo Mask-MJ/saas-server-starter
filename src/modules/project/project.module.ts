@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 
 import { MinioService } from 'src/common/minio/minio.service';
 import { AnalysisTaskController } from './analysis-task/analysis-task.controller';
@@ -11,7 +12,7 @@ import { FactoryService } from './factory/factory.service';
 import { ValveService } from './valve/valve.service';
 
 @Module({
-  imports: [],
+  imports: [HttpModule],
   controllers: [
     FactoryController,
     DeviceController,

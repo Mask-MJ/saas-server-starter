@@ -9,6 +9,12 @@ import {
 import { ActiveUserData } from '@/modules/auth/interfaces/active-user-data.interface';
 import { UploadDto } from '@/common/dto/base.dto';
 import { MinioService } from 'src/common/minio/minio.service';
+import PDFParser from 'pdf2json';
+import { HttpService } from '@nestjs/axios';
+import fs from 'fs';
+import { firstValueFrom } from 'rxjs';
+import { transformPdfData } from './task.helper';
+import mockData from './mock';
 
 @Injectable()
 export class AnalysisTaskService {
@@ -16,6 +22,7 @@ export class AnalysisTaskService {
     @Inject('PrismaService') private readonly prisma: PrismaService,
     @Inject(EventEmitter2) private readonly eventEmitter: EventEmitter2,
     private readonly minioClient: MinioService,
+    @Inject(HttpService) private httpService: HttpService,
   ) {}
 
   async create(
@@ -118,5 +125,47 @@ export class AnalysisTaskService {
     });
   }
 
-  async execute(user: ActiveUserData, id: number) {}
+  async execute(user: ActiveUserData, id: number) {
+    const analysisTask =
+      await this.prisma.client.analysisTask.findUniqueOrThrow({
+        where: { id },
+      });
+    await this.prisma.client.analysisTask.update({
+      where: { id },
+      data: { status: 1 },
+    });
+    console.log('开始执行分析任务', analysisTask);
+    // const pdfParser = new PDFParser(this, true);
+    // pdfParser.on('pdfParser_dataError', (errData: any) =>
+    //   console.error(errData.parserError),
+    // );
+    // pdfParser.on('pdfParser_dataReady', (pdfData) => {
+    //   const pdfStringData: string[] = pdfData.Pages.reduce(
+    //     (acc: string[], page) => {
+    //       const texts = page.Texts.map((text) =>
+    //         decodeURIComponent(text.R[0].T),
+    //       );
+    //       return [...acc, ...texts];
+    //     },
+    //     [],
+    //   );
+    //   // 写入到 json 文件中
+    //   fs.writeFileSync('pdf-zh.json', JSON.stringify(pdfStringData, null, 2));
+    //   transformPdfData(pdfStringData);
+    // });
+
+    // let pdfs: { name: string; url: string }[] = [];
+    // if (typeof analysisTask.pdfs === 'string') {
+    //   pdfs = JSON.parse(analysisTask.pdfs);
+    // }
+    // const { data } = await firstValueFrom(
+    //   this.httpService.get(pdfs[0].url, { responseType: 'arraybuffer' }),
+    // );
+
+    // pdfParser.parseBuffer(data);
+    const result = transformPdfData(mockData);
+    fs.writeFileSync('pdf-zh.json', JSON.stringify(result, null, 2));
+
+    return '分析任务执行成功';
+  }
 }

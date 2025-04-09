@@ -26,7 +26,7 @@ export class CreateAnalysisTaskDto {
    * pdf路径
    */
   @IsJSON()
-  @Transform(({ value }) => JSON.parse(value))
+  @Transform(({ value }) => JSON.stringify(value))
   pdfs: string;
   /**
    * 工厂ID
