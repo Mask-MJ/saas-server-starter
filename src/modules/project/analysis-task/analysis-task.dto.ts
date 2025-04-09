@@ -1,7 +1,8 @@
 import { IntersectionType, PartialType, PickType } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
-  IsArray,
   IsEnum,
+  IsJSON,
   IsNumber,
   IsOptional,
   IsString,
@@ -23,16 +24,10 @@ export class CreateAnalysisTaskDto {
   status: number = 0;
   /**
    * pdf路径
-   * @example [{name: 'pdf1', url: 'http://xxx.com/xxx.pdf'}]
    */
-  @IsArray()
-  pdf: { name: string; url: string }[] = [];
-  /**
-   * 数据字典ID
-   * @example 1
-   */
-  @IsNumber()
-  dictTypeId: number;
+  @IsJSON()
+  @Transform(({ value }) => JSON.parse(value))
+  pdfs: string;
   /**
    * 工厂ID
    * @example 1

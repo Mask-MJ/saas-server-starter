@@ -36,7 +36,7 @@ export class TimeDto {
 
 export class BaseDto extends IntersectionType(PaginateDto, TimeDto) {}
 
-export class uploadDto {
+export class UploadDto {
   @IsString()
   fileName: string;
   file: Express.Multer.File;

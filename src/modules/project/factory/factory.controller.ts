@@ -8,6 +8,8 @@ import {
   Delete,
   Query,
   Headers,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FactoryService } from './factory.service';
 import { Permissions } from 'src/modules/auth/authorization/decorators/permissions.decorator';
@@ -22,9 +24,12 @@ import {
 import { FactoryEntity } from './factory.entity';
 import {
   CreateFactoryDto,
+  ImportValveDataDto,
   QueryFactoryDto,
+  ReportDto,
   UpdateFactoryDto,
 } from './factory.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('工厂管理')
 @ApiBearerAuth('bearer')
@@ -58,13 +63,56 @@ export class FactoryController {
   }
 
   /**
+   * 导入阀门数据
+   * */
+  @Post('import')
+  @UseInterceptors(FileInterceptor('file'))
+  importValveData(
+    @ActiveUser() user: ActiveUserData,
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body: ImportValveDataDto,
+  ) {
+    return this.factoryService.importValveData(user, file, body);
+  }
+
+  /**
+   * 生成工厂中所有阀门报告
+   * */
+  @Post('report')
+  @Permissions('project:factory:query')
+  generateReport(@Body() body: ReportDto) {
+    return this.factoryService.generateReport(body);
+  }
+  /**
+   * 获取工厂工作台详情
+   * */
+  @Get('chart/:id')
+  @ApiOkResponse({ type: FactoryEntity })
+  @Permissions('project:factory:query')
+  findChartData(@Param('id') id: number) {
+    return this.factoryService.findChartData(id);
+  }
+
+  /**
+   * 删除所有工厂
+   * */
+  @Delete('removeAll')
+  @Permissions('project:factory:delete')
+  removeAll(
+    @ActiveUser() user: ActiveUserData,
+    @Headers('X-Real-IP') ip: string,
+  ) {
+    return this.factoryService.removeAll(user, ip);
+  }
+
+  /**
    * 获取单个工厂
    */
   @Get(':id')
   @ApiOkResponse({ type: FactoryEntity })
   @Permissions('project:factory:query')
-  findOne(@Param('id') id: string) {
-    return this.factoryService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.factoryService.findOne(id);
   }
 
   /**
@@ -73,8 +121,12 @@ export class FactoryController {
   @Patch(':id')
   @ApiOkResponse({ type: FactoryEntity })
   @Permissions('project:factory:update')
-  update(@Param('id') id: number, @Body() updateFactoryDto: UpdateFactoryDto) {
-    return this.factoryService.update(id, updateFactoryDto);
+  update(
+    @Param('id') id: number,
+    @ActiveUser() user: ActiveUserData,
+    @Body() updateFactoryDto: UpdateFactoryDto,
+  ) {
+    return this.factoryService.update(id, user, updateFactoryDto);
   }
 
   /**

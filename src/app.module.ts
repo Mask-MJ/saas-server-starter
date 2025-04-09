@@ -9,15 +9,12 @@ import { createKeyv } from '@keyv/redis';
 import { MailModule } from 'src/common/mail/mail.module';
 import { CustomPrismaModule } from 'nestjs-prisma';
 import { extendedPrismaClient } from '@/common/datebase/prisma.extension';
-import { AuthModule } from './modules/auth/auth.module';
 import { RouterModule } from '@nestjs/core';
-import { SystemModule } from './modules/system/system.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { AuthModule } from './modules/auth/auth.module';
+import { SystemModule } from './modules/system/system.module';
 import { MonitorModule } from './modules/monitor/monitor.module';
-import { ValveModule } from './modules/project/valve/valve.module';
-import { FactoryModule } from './modules/project/factory/factory.module';
-import { DeviceModule } from './modules/project/device/device.module';
-import { AnalysisTaskModule } from './modules/project/analysis-task/analysis-task.module';
+import { ProjectModule } from './modules/project/project.module';
 @Module({
   imports: [
     ConfigModule,
@@ -61,13 +58,11 @@ import { AnalysisTaskModule } from './modules/project/analysis-task/analysis-tas
       { path: 'system', module: SystemModule },
       { path: 'monitor', module: MonitorModule },
       { path: 'auth', module: AuthModule },
+      { path: 'project', module: ProjectModule },
     ]),
     SystemModule,
     MonitorModule,
-    ValveModule,
-    FactoryModule,
-    DeviceModule,
-    AnalysisTaskModule,
+    ProjectModule,
   ],
   controllers: [AppController],
   providers: [AppService],

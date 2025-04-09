@@ -6,7 +6,7 @@ import {
   IsNumber,
   IsArray,
 } from 'class-validator';
-import { TimeDto, uploadDto } from 'src/common/dto/base.dto';
+import { TimeDto, UploadDto } from 'src/common/dto/base.dto';
 
 export class CreateFactoryDto {
   /**
@@ -115,7 +115,7 @@ export class UpdateFactoryDto extends PartialType(CreateFactoryDto) {
   id: number;
 }
 
-export class importDto extends uploadDto {
+export class ImportValveDataDto extends UploadDto {
   @IsNumber()
   factoryId: number;
 
@@ -124,7 +124,7 @@ export class importDto extends uploadDto {
   reportMode?: string;
 }
 
-export class reportDto {
+export class ReportDto {
   /**
    * 工厂id
    * @example 1

@@ -49,9 +49,11 @@
     "helmet": "^8.1.0",
     "ip2region": "^2.3.0",
     "jwt": "^0.2.0",
+    "minio": "^8.0.5",
     "nest-winston": "^1.10.2",
     "nestjs-prisma": "^0.25.0",
     "nodemailer": "^6.10.0",
+    "pdf2json": "^3.1.5",
     "prisma-extension-pagination": "^0.7.5",
     "reflect-metadata": "^0.2.2",
     "request-ip": "^3.3.0",
@@ -60,7 +62,8 @@
     "unplugin-swc": "^1.5.1",
     "vitest": "^3.0.9",
     "winston": "^3.17.0",
-    "winston-daily-rotate-file": "^5.0.0"
+    "winston-daily-rotate-file": "^5.0.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
